@@ -10,7 +10,7 @@ The target users are Taiwanese SME manufacturers with roughly 20-200 employees, 
 
 ## MVP Scope
 
-v0.2 includes:
+v0.3 includes:
 
 - deterministic sample organization, electricity, fuel, supplier disclosure, and emission factor CSVs
 - curated public demand evidence CSVs
@@ -20,11 +20,13 @@ v0.2 includes:
 - Taiwan carbon-fee scenario simulation
 - supplier disclosure readiness scoring
 - Markdown report generation
+- PDF-ready standalone HTML report generation
+- local Streamlit dashboard
 - demand evidence validation and scoring
 - CLI commands
 - pytest coverage
 
-v0.2 does not include a frontend, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, ISO certification workflow, or legal interpretation.
+v0.3 does not include authentication, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, database storage, ISO certification workflow, or legal interpretation.
 
 ## Data Pipeline Overview
 
@@ -35,7 +37,7 @@ v0.2 does not include a frontend, OCR, live APIs, scraping, full Scope 3, produc
 5. Preserve row-level calculation traceability in `data/outputs/emissions_trace_{org}_{year}.csv`.
 6. Calculate annual totals and carbon-fee scenarios.
 7. Score supplier disclosure readiness.
-8. Generate one Markdown report per organization-year in `data/outputs/`.
+8. Generate Markdown and standalone HTML reports per organization-year in `data/outputs/`.
 
 The v0.2 demand evidence workflow separately loads curated CSV files from `data/demand_evidence/`, validates source metadata, scores market signals, and generates `data/outputs/demand_evidence_summary.md`.
 
@@ -44,10 +46,10 @@ The v0.2 demand evidence workflow separately loads curated CSV files from `data/
 ```bash
 python -m pip install -e ".[dev]"
 python -m pytest
-python -m carbonradar.cli run-demo --org ORG001 --year 2025
+python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
 ```
 
-The demo command writes outputs to `data/outputs/`, including:
+The full demo command writes outputs to `data/outputs/`, including:
 
 - `validation_report.csv`
 - `emissions_trace_ORG001_2025.csv`
@@ -56,6 +58,10 @@ The demo command writes outputs to `data/outputs/`, including:
 - `fee_scenarios_ORG001_2025.csv`
 - `readiness_ORG001_2025.csv`
 - `ORG001_2025_carbonradar_report.md`
+- `ORG001_2025_carbonradar_report.html`
+- `demand_evidence_validation_report.csv`
+- `demand_signal_scores.csv`
+- `demand_evidence_summary.md`
 
 ## Sample Commands
 
@@ -68,7 +74,9 @@ python -m carbonradar.cli build-demand-report
 python -m carbonradar.cli calc-emissions --org ORG001 --year 2025
 python -m carbonradar.cli score-readiness --org ORG001 --year 2025
 python -m carbonradar.cli build-report --org ORG001 --year 2025
+python -m carbonradar.cli build-html-report --org ORG001 --year 2025
 python -m carbonradar.cli run-demo --org ORG001 --year 2025
+python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
 ```
 
 ## Data Sources And Assumptions
@@ -118,7 +126,7 @@ Carbon-fee scenarios use:
 - preferential A rate: `NT$50/tCO2e`
 - preferential B rate: `NT$100/tCO2e`
 
-The v0.1.1 demo scenario tracks:
+The demo scenario tracks:
 
 - `is_subject_to_fee`: annual emissions are greater than or equal to `25,000 tCO2e`
 - `remaining_to_threshold_tco2e`: `max(25,000 - annual emissions, 0)`
@@ -131,6 +139,35 @@ The v0.2.1 demo estimates chargeable emissions with a simplified K-value model:
 - `chargeable_emissions_tco2e`: `max(annual emissions - k value, 0) x adjustment factor` when subject to fee, otherwise `0`
 
 Scenario fees are calculated from chargeable emissions after the simplified K-value step. This is a simplified planning model, not a legal interpretation of the official fee base.
+
+## Delivery Layer
+
+v0.3 adds two delivery surfaces for the final project demo:
+
+- Streamlit dashboard for local interactive review.
+- Standalone HTML report for browser viewing or print-to-PDF.
+
+Run the dashboard from the repository root:
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+The dashboard loads the same local sample CSVs and public demand evidence seed files as the CLI. It shows company profile, emissions summaries, monthly emissions table and chart, carbon-fee scenario radar, readiness score, demand evidence score, and clear demo disclaimers.
+
+Build a PDF-ready HTML report:
+
+```bash
+python -m carbonradar.cli build-html-report --org ORG001 --year 2025
+```
+
+Generate the full demo bundle:
+
+```bash
+python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
+```
+
+The HTML report is standalone and includes basic CSS for printing. It is not a PDF renderer; use browser print-to-PDF when a PDF artifact is needed.
 
 ## Validation Bad-Data Demo
 
@@ -154,7 +191,7 @@ When validated activity data is available, readiness scoring uses actual electri
 
 - Fuel emission factors are placeholders for demo use.
 - Scope 3 is not implemented.
-- Reports are Markdown only; PDF rendering is out of scope.
+- Reports are Markdown and standalone HTML; native PDF rendering is out of scope.
 - The project does not connect to government APIs or utility systems.
 - The demand evidence pipeline does not scrape websites or refresh dynamic sources automatically.
 - The project does not provide ISO 14064 verification, legal advice, tax advice, or certification advice.
@@ -171,5 +208,5 @@ The sample data is synthetic and does not contain personal data or confidential 
 - Add user-provided CSV import templates.
 - Add richer validation reports and source-document tracking.
 - Add PDF report export.
-- Add optional dashboard after the local pipeline is stable.
+- Expand the local dashboard with user-provided CSV uploads in a later phase.
 - Explore OCR and live API ingestion in later phases only.

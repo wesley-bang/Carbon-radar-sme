@@ -141,7 +141,7 @@ def build_markdown_report(
 
 ## Boundary and assumptions
 
-This v0.1 report covers Scope 1 stationary fuel records and Scope 2 purchased electricity for calendar year {year}. It does not include OCR, live APIs, full Scope 3, product carbon footprint, ISO certification workflow, or legal interpretation.
+This demo report covers Scope 1 stationary fuel records and Scope 2 purchased electricity for calendar year {year}. It does not include OCR, live APIs, full Scope 3, product carbon footprint, ISO certification workflow, or legal interpretation.
 
 ## Scope 1 summary
 

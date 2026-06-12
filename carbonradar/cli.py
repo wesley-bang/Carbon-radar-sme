@@ -10,6 +10,7 @@ import pandas as pd
 from carbonradar.demand.build_demand_report import build_demand_report
 from carbonradar.demand.load_evidence import load_demand_evidence, validate_evidence_sources
 from carbonradar.demand.score_market_signals import demand_score_frame, score_market_signals
+from carbonradar.delivery.demo_bundle import run_all_demo_outputs
 from carbonradar.ingestion.load_sample import (
     OUTPUT_DIR,
     build_sample_manifest,
@@ -21,6 +22,7 @@ from carbonradar.processing.fee_scenarios import fee_scenario_frame
 from carbonradar.processing.readiness import readiness_frame, score_readiness
 from carbonradar.processing.validate import validate_all, validate_fuel_logs, validate_utility_bills
 from carbonradar.reporting.build_markdown_report import build_markdown_report
+from carbonradar.reporting.build_html_report import build_html_report
 
 
 def _write_csv(df: pd.DataFrame, path: Path) -> Path:
@@ -194,6 +196,13 @@ def cmd_build_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_build_html_report(args: argparse.Namespace) -> int:
+    data, validation_report = _validated_sample()
+    metadata = build_html_report(args.org, args.year, data=data, validation_report=validation_report)
+    print(f"Wrote HTML report: {metadata.output_path}")
+    return 0
+
+
 def cmd_run_demo(args: argparse.Namespace) -> int:
     data, validation_report = _validated_sample()
     _write_csv(validation_report, OUTPUT_DIR / "validation_report.csv")
@@ -224,6 +233,14 @@ def cmd_run_demo(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_run_all_demo(args: argparse.Namespace) -> int:
+    paths = run_all_demo_outputs(args.org, args.year)
+    print(f"Full demo bundle complete for {args.org} {args.year}")
+    for name, path in paths.items():
+        print(f"{name}: {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="carbonradar", description="CarbonRadar SME local pipeline")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -237,7 +254,9 @@ def build_parser() -> argparse.ArgumentParser:
         "calc-emissions": (cmd_calc_emissions, True),
         "score-readiness": (cmd_score_readiness, True),
         "build-report": (cmd_build_report, True),
+        "build-html-report": (cmd_build_html_report, True),
         "run-demo": (cmd_run_demo, True),
+        "run-all-demo": (cmd_run_all_demo, True),
     }
 
     for name, (handler, needs_org_year) in commands.items():

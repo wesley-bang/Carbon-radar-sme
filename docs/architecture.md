@@ -1,6 +1,6 @@
 # Architecture
 
-CarbonRadar SME v0.2 is a local batch pipeline. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, and Markdown files for reports.
+CarbonRadar SME v0.3 is a local batch pipeline with a small local delivery layer. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, Markdown/HTML files for reports, and Streamlit for a demo dashboard.
 
 ## Components
 
@@ -10,7 +10,10 @@ CarbonRadar SME v0.2 is a local batch pipeline. It uses committed CSV files as t
 - `carbonradar.processing.fee_scenarios`: estimates Taiwan carbon-fee exposure using v0.1 scenario assumptions.
 - `carbonradar.processing.readiness`: scores supplier disclosure readiness.
 - `carbonradar.reporting`: builds organization-year Markdown reports.
+- `carbonradar.reporting.build_html_report`: builds standalone PDF-ready HTML reports.
 - `carbonradar.demand`: loads curated public demand evidence, validates sources, scores market signals, and builds the demand evidence report.
+- `carbonradar.delivery`: prepares reusable dashboard data and the one-command demo bundle.
+- `app.streamlit_app`: local Streamlit dashboard for the final project delivery layer.
 - `carbonradar.cli`: exposes the reproducible command line workflow.
 
 ## Flow
@@ -42,6 +45,15 @@ flowchart LR
     J --> K
     H --> K
     K --> L["data/outputs Markdown report"]
+    I --> V["reporting.build_html_report"]
+    J --> V
+    H --> V
+    V --> W["data/outputs HTML report"]
+    H --> X["delivery.dashboard_data"]
+    I --> X
+    J --> X
+    Q --> X
+    X --> Y["app/streamlit_app.py"]
     M["validate-bad-demo in-memory bad data"] --> C
     N["data/demand_evidence CSVs"] --> O["demand.load_evidence"]
     O --> P["demand.validate_evidence_sources"]
@@ -52,6 +64,11 @@ flowchart LR
     P --> T
     Q --> T
     T --> U["demand_evidence_summary.md"]
+    Z["cli run-all-demo"] --> L
+    Z --> W
+    Z --> R
+    Z --> S
+    Z --> U
 ```
 
-No frontend, OCR, live scraping, live API connection, message queue, workflow scheduler, or deployment platform is part of v0.2.
+No authentication, OCR, live scraping, live API connection, database, message queue, workflow scheduler, or deployment platform is part of v0.3.
