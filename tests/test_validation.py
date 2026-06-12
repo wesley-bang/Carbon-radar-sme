@@ -1,5 +1,6 @@
 import pandas as pd
 
+from carbonradar.processing.normalize import normalize_bill_month
 from carbonradar.processing.validate import validate_utility_bills
 
 
@@ -21,6 +22,33 @@ def test_bill_month_normalization():
     assert report.empty
     assert valid.loc[0, "bill_month"] == "2025-01"
     assert valid.loc[0, "period_month"] == "2025-01"
+
+
+def test_invalid_month_normalization_rejects_regex_formats():
+    assert normalize_bill_month("2025-13") == ""
+    assert normalize_bill_month("2025/13") == ""
+    assert normalize_bill_month("202513") == ""
+    assert normalize_bill_month("2025-00") == ""
+
+
+def test_invalid_month_rejected_by_utility_validation():
+    df = pd.DataFrame(
+        [
+            {
+                "org_id": "ORG001",
+                "site_id": "SITE001",
+                "bill_month": "2025-13",
+                "kwh": 1000,
+                "demand_kw": 10,
+            }
+        ]
+    )
+
+    valid, report = validate_utility_bills(df)
+
+    assert valid.empty
+    assert "bill_month" in set(report["field"])
+    assert "invalid month format" in set(report["reason"])
 
 
 def test_negative_kwh_rejection():

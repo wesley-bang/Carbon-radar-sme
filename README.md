@@ -10,19 +10,21 @@ The target users are Taiwanese SME manufacturers with roughly 20-200 employees, 
 
 ## MVP Scope
 
-v0.1 includes:
+v0.2 includes:
 
 - deterministic sample organization, electricity, fuel, supplier disclosure, and emission factor CSVs
+- curated public demand evidence CSVs
 - CSV ingestion
 - validation and month normalization
 - Scope 1 and Scope 2 emissions calculations
 - Taiwan carbon-fee scenario simulation
 - supplier disclosure readiness scoring
 - Markdown report generation
+- demand evidence validation and scoring
 - CLI commands
 - pytest coverage
 
-v0.1 does not include a frontend, OCR, live APIs, full Scope 3, product carbon footprinting, deployment infrastructure, ISO certification workflow, or legal interpretation.
+v0.2 does not include a frontend, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, ISO certification workflow, or legal interpretation.
 
 ## Data Pipeline Overview
 
@@ -34,6 +36,8 @@ v0.1 does not include a frontend, OCR, live APIs, full Scope 3, product carbon f
 6. Calculate annual totals and carbon-fee scenarios.
 7. Score supplier disclosure readiness.
 8. Generate one Markdown report per organization-year in `data/outputs/`.
+
+The v0.2 demand evidence workflow separately loads curated CSV files from `data/demand_evidence/`, validates source metadata, scores market signals, and generates `data/outputs/demand_evidence_summary.md`.
 
 ## Quickstart
 
@@ -59,6 +63,8 @@ The demo command writes outputs to `data/outputs/`, including:
 python -m carbonradar.cli ingest-sample
 python -m carbonradar.cli validate
 python -m carbonradar.cli validate-bad-demo
+python -m carbonradar.cli validate-demand-evidence
+python -m carbonradar.cli build-demand-report
 python -m carbonradar.cli calc-emissions --org ORG001 --year 2025
 python -m carbonradar.cli score-readiness --org ORG001 --year 2025
 python -m carbonradar.cli build-report --org ORG001 --year 2025
@@ -74,6 +80,34 @@ Sample data is synthetic and deterministic:
 - `ORG003`: plastic injection factory, one site
 
 The demo electricity factor is `0.467 kgCO2e/kWh` for 2025. Diesel and natural gas factors are demo placeholders and are clearly marked in `data/sample/emission_factors.csv` and generated reports.
+
+## Demand Evidence Pipeline
+
+v0.2 adds a reproducible demand evidence workflow for the final project requirement "Evidence of Demand and Willingness to Pay." It uses curated public-data seed CSVs instead of interviews, scraping, or live APIs.
+
+Evidence categories:
+
+- official regulatory sources
+- market-size sources
+- competitor pricing benchmarks
+- ESG job posting examples
+- public procurement examples
+- willingness-to-pay assumptions
+
+Run:
+
+```bash
+python -m carbonradar.cli validate-demand-evidence
+python -m carbonradar.cli build-demand-report
+```
+
+Outputs:
+
+- `data/outputs/demand_evidence_validation_report.csv`
+- `data/outputs/demand_signal_scores.csv`
+- `data/outputs/demand_evidence_summary.md`
+
+Each evidence row includes source name, source URL, access date, notes, and confidence level. Rows marked `needs_verification` are treated as weak signals. Willingness-to-pay rows are internal hypotheses and are not presented as verified market facts.
 
 Carbon-fee scenarios use:
 
@@ -114,6 +148,7 @@ When validated activity data is available, readiness scoring uses actual electri
 - Scope 3 is not implemented.
 - Reports are Markdown only; PDF rendering is out of scope.
 - The project does not connect to government APIs or utility systems.
+- The demand evidence pipeline does not scrape websites or refresh dynamic sources automatically.
 - The project does not provide ISO 14064 verification, legal advice, tax advice, or certification advice.
 
 ## Legal And Privacy Disclaimer

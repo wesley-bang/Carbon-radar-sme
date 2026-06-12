@@ -20,11 +20,17 @@ def normalize_bill_month(value: Any) -> str:
 
     compact = re.fullmatch(r"(\d{4})(\d{2})", text)
     if compact:
-        return f"{compact.group(1)}-{compact.group(2)}"
+        month = int(compact.group(2))
+        if not 1 <= month <= 12:
+            return ""
+        return f"{compact.group(1)}-{month:02d}"
 
     dashed = re.fullmatch(r"(\d{4})[-/](\d{1,2})", text)
     if dashed:
-        return f"{dashed.group(1)}-{int(dashed.group(2)):02d}"
+        month = int(dashed.group(2))
+        if not 1 <= month <= 12:
+            return ""
+        return f"{dashed.group(1)}-{month:02d}"
 
     try:
         parsed = pd.to_datetime(text, errors="raise")
@@ -36,4 +42,3 @@ def normalize_bill_month(value: Any) -> str:
 
 def period_year(period_month: str) -> int:
     return int(str(period_month)[:4])
-

@@ -76,3 +76,19 @@ In v0.1.1, readiness scoring can use validated activity data when provided:
 - factor version control: factor rows with `factor_id`, `factor_year`, `source_name`, and `source_url`
 
 Governance and supplier response readiness remain questionnaire-driven. If activity data is not provided, the scorer uses the original supplier disclosure proxy fields.
+
+## Demand Evidence Scoring
+
+v0.2 adds a public-data demand evidence pipeline for the final project requirement "Evidence of Demand and Willingness to Pay." It uses curated CSV seed datasets instead of user interviews, scraping, or live APIs.
+
+Evidence validation checks required columns, source metadata, access dates, and confidence levels. Rows are not dropped; issues are written to a validation report.
+
+The demand score totals 100 points:
+
+- regulatory pressure: 25
+- market size: 20
+- willingness to pay: 20
+- competitor benchmark: 15
+- hiring or procurement signal: 20
+
+Scores use confidence-weighted evidence counts. Willingness-to-pay rows are internal hypotheses and must not be described as verified buyer behavior.

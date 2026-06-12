@@ -1,6 +1,6 @@
 # Architecture
 
-CarbonRadar SME v0.1 is a local batch pipeline. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, and Markdown files for reports.
+CarbonRadar SME v0.2 is a local batch pipeline. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, and Markdown files for reports.
 
 ## Components
 
@@ -10,6 +10,7 @@ CarbonRadar SME v0.1 is a local batch pipeline. It uses committed CSV files as t
 - `carbonradar.processing.fee_scenarios`: estimates Taiwan carbon-fee exposure using v0.1 scenario assumptions.
 - `carbonradar.processing.readiness`: scores supplier disclosure readiness.
 - `carbonradar.reporting`: builds organization-year Markdown reports.
+- `carbonradar.demand`: loads curated public demand evidence, validates sources, scores market signals, and builds the demand evidence report.
 - `carbonradar.cli`: exposes the reproducible command line workflow.
 
 ## Flow
@@ -42,6 +43,15 @@ flowchart LR
     H --> K
     K --> L["data/outputs Markdown report"]
     M["validate-bad-demo in-memory bad data"] --> C
+    N["data/demand_evidence CSVs"] --> O["demand.load_evidence"]
+    O --> P["demand.validate_evidence_sources"]
+    O --> Q["demand.score_market_signals"]
+    P --> R["demand validation report"]
+    Q --> S["demand signal scores"]
+    O --> T["demand.build_demand_report"]
+    P --> T
+    Q --> T
+    T --> U["demand_evidence_summary.md"]
 ```
 
-No frontend, OCR, live API connection, message queue, workflow scheduler, or deployment platform is part of v0.1.
+No frontend, OCR, live scraping, live API connection, message queue, workflow scheduler, or deployment platform is part of v0.2.

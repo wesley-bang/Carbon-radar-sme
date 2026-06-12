@@ -1,4 +1,4 @@
-"""Command line interface for CarbonRadar SME v0.1."""
+"""Command line interface for CarbonRadar SME."""
 
 from __future__ import annotations
 
@@ -7,6 +7,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from carbonradar.demand.build_demand_report import build_demand_report
+from carbonradar.demand.load_evidence import load_demand_evidence, validate_evidence_sources
+from carbonradar.demand.score_market_signals import demand_score_frame, score_market_signals
 from carbonradar.ingestion.load_sample import (
     OUTPUT_DIR,
     build_sample_manifest,
@@ -127,6 +130,30 @@ def cmd_validate_bad_demo(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_validate_demand_evidence(_: argparse.Namespace) -> int:
+    evidence = load_demand_evidence()
+    report = validate_evidence_sources(evidence)
+    path = _write_csv(report, OUTPUT_DIR / "demand_evidence_validation_report.csv")
+    error_count = int((report["severity"] == "error").sum()) if not report.empty else 0
+    print(f"Demand evidence validation complete: {error_count} errors")
+    print(f"Wrote demand evidence validation report: {path}")
+    return 0
+
+
+def cmd_build_demand_report(_: argparse.Namespace) -> int:
+    evidence = load_demand_evidence()
+    validation_report = validate_evidence_sources(evidence)
+    validation_path = _write_csv(validation_report, OUTPUT_DIR / "demand_evidence_validation_report.csv")
+    score = score_market_signals(evidence)
+    score_path = _write_csv(demand_score_frame(score), OUTPUT_DIR / "demand_signal_scores.csv")
+    report_path, _ = build_demand_report(evidence=evidence)
+    print(f"Wrote demand evidence validation report: {validation_path}")
+    print(f"Wrote demand signal scores: {score_path}")
+    print(f"Wrote demand evidence report: {report_path}")
+    print(f"Demand score: {score.total_demand_score:.1f}/100 ({score.interpretation})")
+    return 0
+
+
 def _emissions_for_args(args: argparse.Namespace) -> tuple[dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     data, validation_report = _validated_sample()
     trace, monthly, annual = calculate_emissions(data, args.year, args.org)
@@ -198,13 +225,15 @@ def cmd_run_demo(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="carbonradar", description="CarbonRadar SME v0.1 local pipeline")
+    parser = argparse.ArgumentParser(prog="carbonradar", description="CarbonRadar SME local pipeline")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     commands = {
         "ingest-sample": (cmd_ingest_sample, False),
         "validate": (cmd_validate, False),
         "validate-bad-demo": (cmd_validate_bad_demo, False),
+        "validate-demand-evidence": (cmd_validate_demand_evidence, False),
+        "build-demand-report": (cmd_build_demand_report, False),
         "calc-emissions": (cmd_calc_emissions, True),
         "score-readiness": (cmd_score_readiness, True),
         "build-report": (cmd_build_report, True),
