@@ -1,0 +1,5 @@
+org_id,year,questionnaire_received,activity_data_complete,bill_files_available,site_mapping_complete,has_esg_owner,has_management_review,supplier_response_rate,factor_version_recorded,notes
+ORG001,2025,yes,yes,yes,yes,yes,no,80,yes,Fastener customer questionnaire package mostly ready
+ORG002,2025,yes,yes,yes,no,yes,no,65,yes,Site mapping and management review need cleanup
+ORG003,2025,yes,no,yes,no,no,no,48,no,Plastic injection supplier data is still fragmented
+

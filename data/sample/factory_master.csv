@@ -1,0 +1,6 @@
+org_id,org_name,industry,site_id,site_name,city,employee_count,annual_revenue_band,boundary_notes
+ORG001,Taiwan Precision Fasteners Co.,metal processing / fastener factory,ORG001-TPE,Taoyuan Fastener Plant,Taoyuan,85,NTD 100M-300M,Operational control boundary; electricity and stationary fuels only
+ORG001,Taiwan Precision Fasteners Co.,metal processing / fastener factory,ORG001-TNN,Tainan Heat Treatment Line,Tainan,85,NTD 100M-300M,Operational control boundary; electricity and stationary fuels only
+ORG002,CNC Partner Works,CNC machining factory,ORG002-TXG,Taichung Machining Plant,Taichung,62,NTD 50M-150M,Operational control boundary; electricity and stationary fuels only
+ORG003,Formosa Injection Components,plastic injection factory,ORG003-HSZ,Hsinchu Injection Plant,Hsinchu,120,NTD 150M-400M,Operational control boundary; electricity and stationary fuels only
+

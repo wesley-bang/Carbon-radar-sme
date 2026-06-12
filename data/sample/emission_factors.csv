@@ -1,0 +1,5 @@
+factor_id,activity_type,unit,factor_year,kgco2e_per_unit,source_name,source_url,is_demo_placeholder,notes
+EF-TW-ELEC-2025-DEMO,electricity,kWh,2025,0.467,MOEA Energy Administration demo value,https://www.moeaea.gov.tw/ecw/populace/content/ContentDesc.aspx?menu_id=26678,false,Demo electricity factor for university project calculations
+EF-DEMO-DIESEL-2025,diesel,liter,2025,2.68,Demo placeholder fuel factor,docs/references.md,true,Placeholder only; replace with verified source before real use
+EF-DEMO-NG-2025,natural_gas,m3,2025,2.15,Demo placeholder fuel factor,docs/references.md,true,Placeholder only; replace with verified source before real use
+
