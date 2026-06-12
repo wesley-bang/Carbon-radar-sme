@@ -25,5 +25,23 @@ data/sample/*.csv
   -> data/outputs/*
 ```
 
-No frontend, OCR, live API connection, message queue, workflow scheduler, or deployment platform is part of v0.1.
+```mermaid
+flowchart LR
+    A["data/sample CSVs"] --> B["ingestion.load_sample"]
+    B --> C["processing.validate"]
+    C --> D["valid activity data"]
+    C --> E["validation reports"]
+    D --> F["processing.emissions"]
+    F --> G["emissions trace with source_document"]
+    F --> H["monthly and annual summaries"]
+    H --> I["processing.fee_scenarios"]
+    D --> J["processing.readiness"]
+    E --> J
+    I --> K["reporting.build_markdown_report"]
+    J --> K
+    H --> K
+    K --> L["data/outputs Markdown report"]
+    M["validate-bad-demo in-memory bad data"] --> C
+```
 
+No frontend, OCR, live API connection, message queue, workflow scheduler, or deployment platform is part of v0.1.

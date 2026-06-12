@@ -63,3 +63,30 @@ def test_missing_required_fields():
     assert "org_id" in set(report["field"])
     assert "missing required field" in set(report["reason"])
 
+
+def test_electricity_outlier_warning_keeps_row():
+    rows = [
+        {
+            "org_id": "ORG001",
+            "site_id": "SITE001",
+            "bill_month": f"2025-{month:02d}",
+            "kwh": 1000,
+            "demand_kw": 10,
+        }
+        for month in range(1, 12)
+    ]
+    rows.append(
+        {
+            "org_id": "ORG001",
+            "site_id": "SITE001",
+            "bill_month": "2025-12",
+            "kwh": 10000,
+            "demand_kw": 12,
+        }
+    )
+
+    valid, report = validate_utility_bills(pd.DataFrame(rows))
+
+    assert len(valid) == 12
+    assert "warning" in set(report["severity"])
+    assert "electricity outlier" in report.loc[0, "reason"]

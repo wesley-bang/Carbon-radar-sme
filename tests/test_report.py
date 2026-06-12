@@ -22,8 +22,10 @@ def test_report_file_generation(tmp_path):
     assert "Annual Scope 1 emissions" in content
     assert "Annual Scope 2 emissions" in content
     assert "Carbon fee scenario radar" in content
+    assert "Remaining to threshold" in content
+    assert "Excess over threshold" in content
+    assert "Subject to direct fee" in content
     assert "Supplier disclosure readiness score" in content
     assert "Recommended actions" in content
     assert "Legal disclaimer" in content
     assert "Demo placeholder" in content
-

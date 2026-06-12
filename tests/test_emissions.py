@@ -12,6 +12,7 @@ def test_scope2_calculation():
                 "period_month": "2025-01",
                 "kwh": 10000,
                 "source_row_number": 2,
+                "source_document": "bill-001",
             }
         ]
     )
@@ -31,6 +32,7 @@ def test_scope2_calculation():
 
     assert trace.loc[0, "scope"] == "Scope 2"
     assert trace.loc[0, "emissions_tco2e"] == 4.67
+    assert trace.loc[0, "source_document"] == "bill-001"
 
 
 def test_scope1_calculation():
@@ -44,6 +46,7 @@ def test_scope1_calculation():
                 "quantity": 100,
                 "unit": "liter",
                 "source_row_number": 2,
+                "source_document": "fuel-001",
             }
         ]
     )
@@ -63,4 +66,4 @@ def test_scope1_calculation():
 
     assert trace.loc[0, "scope"] == "Scope 1"
     assert trace.loc[0, "emissions_tco2e"] == 0.268
-
+    assert trace.loc[0, "source_document"] == "fuel-001"

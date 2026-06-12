@@ -35,12 +35,15 @@ The v0.1 scenario parameters are:
 - preferential A rate: `NT$50/tCO2e`
 - preferential B rate: `NT$100/tCO2e`
 
-Fees apply only to excess emissions above the threshold:
+The v0.1.1 scenario tracks applicability separately from threshold distance:
 
 ```text
-feeable emissions = max(annual emissions - 25000, 0)
-fee = feeable emissions x scenario rate
+is_subject_to_fee = annual emissions >= 25000
+remaining_to_threshold_tco2e = max(25000 - annual emissions, 0)
+excess_over_threshold_tco2e = max(annual emissions - 25000, 0)
 ```
+
+If `is_subject_to_fee` is true, demo scenario fees are calculated as full annual emissions multiplied by the scenario rate. If false, scenario fees are zero.
 
 Exposure levels:
 
@@ -66,3 +69,10 @@ Risk levels:
 
 The top three recommended actions are the largest gaps from the weighted sub-scores.
 
+In v0.1.1, readiness scoring can use validated activity data when provided:
+
+- data completeness: 12 months of electricity data per site plus fuel record month coverage
+- traceability: percentage of utility and fuel rows with `source_document`
+- factor version control: factor rows with `factor_id`, `factor_year`, `source_name`, and `source_url`
+
+Governance and supplier response readiness remain questionnaire-driven. If activity data is not provided, the scorer uses the original supplier disclosure proxy fields.

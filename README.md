@@ -58,6 +58,7 @@ The demo command writes outputs to `data/outputs/`, including:
 ```bash
 python -m carbonradar.cli ingest-sample
 python -m carbonradar.cli validate
+python -m carbonradar.cli validate-bad-demo
 python -m carbonradar.cli calc-emissions --org ORG001 --year 2025
 python -m carbonradar.cli score-readiness --org ORG001 --year 2025
 python -m carbonradar.cli build-report --org ORG001 --year 2025
@@ -81,7 +82,31 @@ Carbon-fee scenarios use:
 - preferential A rate: `NT$50/tCO2e`
 - preferential B rate: `NT$100/tCO2e`
 
-Fees are calculated on excess emissions above the threshold only: `max(annual emissions - 25,000, 0)`.
+The v0.1.1 demo scenario tracks:
+
+- `is_subject_to_fee`: annual emissions are greater than or equal to `25,000 tCO2e`
+- `remaining_to_threshold_tco2e`: `max(25,000 - annual emissions, 0)`
+- `excess_over_threshold_tco2e`: `max(annual emissions - 25,000, 0)`
+
+If an organization is subject to the fee, scenario fees are calculated against full annual emissions. Otherwise scenario fees are zero. This is a conservative demo model, not a legal interpretation of the official fee base.
+
+## Validation Bad-Data Demo
+
+The clean sample pipeline is not contaminated with invalid rows. To demonstrate validation behavior, run:
+
+```bash
+python -m carbonradar.cli validate-bad-demo
+```
+
+This writes `data/outputs/validation_bad_demo_report.csv` and demonstrates negative kWh, missing `org_id`, invalid month, negative fuel quantity, and electricity outlier warning handling.
+
+## Traceability
+
+Emissions trace outputs include `source_document`, `source_dataset`, and `source_row_number` so each calculated emissions row can be traced back to a synthetic bill or fuel log record.
+
+## Readiness Scoring
+
+When validated activity data is available, readiness scoring uses actual electricity month coverage, fuel record coverage, source-document coverage, and emission-factor metadata completeness. When only questionnaire data is provided, it falls back to the supplier disclosure proxy fields.
 
 ## Limitations
 
@@ -105,4 +130,3 @@ The sample data is synthetic and does not contain personal data or confidential 
 - Add PDF report export.
 - Add optional dashboard after the local pipeline is stable.
 - Explore OCR and live API ingestion in later phases only.
-

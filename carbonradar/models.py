@@ -33,13 +33,16 @@ class EmissionTraceRow(BaseModel):
     scope: str
     source_dataset: str
     source_row_number: int
+    source_document: str = ""
 
 
 class FeeScenarioResult(BaseModel):
     org_id: str
     year: int
     annual_emissions_tco2e: float
-    threshold_gap_tco2e: float
+    remaining_to_threshold_tco2e: float
+    excess_over_threshold_tco2e: float
+    is_subject_to_fee: bool
     direct_fee_exposure_level: str
     scenario_fee_standard_ntd: float
     scenario_fee_preferential_a_ntd: float
@@ -69,4 +72,3 @@ def model_to_dict(model: BaseModel) -> dict[str, Any]:
     if hasattr(model, "model_dump"):
         return model.model_dump()
     return model.dict()
-

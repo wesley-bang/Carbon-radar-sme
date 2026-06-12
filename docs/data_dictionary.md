@@ -60,5 +60,14 @@ Errors reject rows. Warnings, such as electricity outliers, keep rows in the val
 
 ## Emissions Trace
 
-Columns: `org_id`, `site_id`, `period_month`, `activity_type`, `amount`, `unit`, `factor_id`, `factor_year`, `kgco2e_per_unit`, `emissions_tco2e`, `scope`, `source_dataset`, `source_row_number`.
+Columns: `org_id`, `site_id`, `period_month`, `activity_type`, `amount`, `unit`, `factor_id`, `factor_year`, `kgco2e_per_unit`, `emissions_tco2e`, `scope`, `source_dataset`, `source_row_number`, `source_document`.
 
+## Fee Scenario Output
+
+Columns: `org_id`, `year`, `annual_emissions_tco2e`, `remaining_to_threshold_tco2e`, `excess_over_threshold_tco2e`, `is_subject_to_fee`, `direct_fee_exposure_level`, `scenario_fee_standard_ntd`, `scenario_fee_preferential_a_ntd`, `scenario_fee_preferential_b_ntd`, `disclaimer`.
+
+Scenario fees are zero when `is_subject_to_fee` is false. When true, fees are calculated against full annual emissions in this demo scenario model.
+
+## Readiness Output
+
+Readiness outputs include `total_score`, `risk_level`, sub-score columns, and `top_3_recommended_actions`. Data-driven scoring uses validated utility and fuel coverage plus source-document and factor metadata completeness when those dataframes are available.

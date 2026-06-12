@@ -13,11 +13,10 @@ from carbonradar.ingestion.load_sample import (
     ensure_output_dir,
     load_sample_data,
 )
-from carbonradar.models import model_to_dict
 from carbonradar.processing.emissions import annual_total_tco2e, calculate_emissions
 from carbonradar.processing.fee_scenarios import fee_scenario_frame
 from carbonradar.processing.readiness import readiness_frame, score_readiness
-from carbonradar.processing.validate import validate_all
+from carbonradar.processing.validate import validate_all, validate_fuel_logs, validate_utility_bills
 from carbonradar.reporting.build_markdown_report import build_markdown_report
 
 
@@ -52,6 +51,82 @@ def cmd_validate(_: argparse.Namespace) -> int:
     return 0
 
 
+def _bad_demo_data() -> tuple[pd.DataFrame, pd.DataFrame]:
+    utility_rows = [
+        {
+            "org_id": "ORG_BAD",
+            "site_id": "BAD-SITE-1",
+            "bill_month": f"2025-{month:02d}",
+            "kwh": 1000,
+            "demand_kw": 50,
+            "source_document": f"bad-demo-utility-{month:02d}",
+        }
+        for month in range(1, 12)
+    ]
+    utility_rows.extend(
+        [
+            {
+                "org_id": "ORG_BAD",
+                "site_id": "BAD-SITE-1",
+                "bill_month": "2025-12",
+                "kwh": 10000,
+                "demand_kw": 55,
+                "source_document": "bad-demo-utility-outlier",
+            },
+            {
+                "org_id": "ORG_BAD",
+                "site_id": "BAD-SITE-2",
+                "bill_month": "2025-01",
+                "kwh": -10,
+                "demand_kw": 20,
+                "source_document": "bad-demo-negative-kwh",
+            },
+            {
+                "org_id": "",
+                "site_id": "BAD-SITE-2",
+                "bill_month": "2025-02",
+                "kwh": 900,
+                "demand_kw": 19,
+                "source_document": "bad-demo-missing-org",
+            },
+            {
+                "org_id": "ORG_BAD",
+                "site_id": "BAD-SITE-2",
+                "bill_month": "bad-month",
+                "kwh": 950,
+                "demand_kw": 18,
+                "source_document": "bad-demo-invalid-month",
+            },
+        ]
+    )
+
+    fuel_rows = [
+        {
+            "org_id": "ORG_BAD",
+            "site_id": "BAD-SITE-1",
+            "fuel_month": "2025-01",
+            "fuel_type": "diesel",
+            "quantity": -5,
+            "unit": "liter",
+            "source_document": "bad-demo-negative-fuel",
+        }
+    ]
+    return pd.DataFrame(utility_rows), pd.DataFrame(fuel_rows)
+
+
+def cmd_validate_bad_demo(_: argparse.Namespace) -> int:
+    utility, fuel = _bad_demo_data()
+    _, utility_report = validate_utility_bills(utility)
+    _, fuel_report = validate_fuel_logs(fuel)
+    report = pd.concat([utility_report, fuel_report], ignore_index=True)
+    path = _write_csv(report, OUTPUT_DIR / "validation_bad_demo_report.csv")
+    error_count = int((report["severity"] == "error").sum()) if not report.empty else 0
+    warning_count = int((report["severity"] == "warning").sum()) if not report.empty else 0
+    print(f"Bad-data validation demo complete: {error_count} errors, {warning_count} warnings")
+    print(f"Wrote validation demo report: {path}")
+    return 0
+
+
 def _emissions_for_args(args: argparse.Namespace) -> tuple[dict[str, pd.DataFrame], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     data, validation_report = _validated_sample()
     trace, monthly, annual = calculate_emissions(data, args.year, args.org)
@@ -70,8 +145,16 @@ def cmd_calc_emissions(args: argparse.Namespace) -> int:
 
 
 def cmd_score_readiness(args: argparse.Namespace) -> int:
-    data = load_sample_data()
-    result = score_readiness(data["supplier_disclosure"], args.org, args.year)
+    data, validation_report = _validated_sample()
+    result = score_readiness(
+        data["supplier_disclosure"],
+        args.org,
+        args.year,
+        utility_bills=data["utility_bills"],
+        fuel_logs=data["fuel_logs"],
+        emission_factors=data["emission_factors"],
+        validation_report=validation_report,
+    )
     _write_csv(readiness_frame(result), OUTPUT_DIR / f"readiness_{args.org}_{args.year}.csv")
     print(f"Readiness score for {args.org} {args.year}: {result.total_score:.1f}/100 ({result.risk_level})")
     return 0
@@ -95,7 +178,15 @@ def cmd_run_demo(args: argparse.Namespace) -> int:
     _write_csv(annual, OUTPUT_DIR / f"annual_emissions_{args.org}_{args.year}.csv")
     _write_csv(fee_scenario_frame(args.org, args.year, total), OUTPUT_DIR / f"fee_scenarios_{args.org}_{args.year}.csv")
 
-    readiness = score_readiness(data["supplier_disclosure"], args.org, args.year)
+    readiness = score_readiness(
+        data["supplier_disclosure"],
+        args.org,
+        args.year,
+        utility_bills=data["utility_bills"],
+        fuel_logs=data["fuel_logs"],
+        emission_factors=data["emission_factors"],
+        validation_report=validation_report,
+    )
     _write_csv(readiness_frame(readiness), OUTPUT_DIR / f"readiness_{args.org}_{args.year}.csv")
 
     metadata = build_markdown_report(args.org, args.year, data=data, validation_report=validation_report)
@@ -113,6 +204,7 @@ def build_parser() -> argparse.ArgumentParser:
     commands = {
         "ingest-sample": (cmd_ingest_sample, False),
         "validate": (cmd_validate, False),
+        "validate-bad-demo": (cmd_validate_bad_demo, False),
         "calc-emissions": (cmd_calc_emissions, True),
         "score-readiness": (cmd_score_readiness, True),
         "build-report": (cmd_build_report, True),
@@ -137,4 +229,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

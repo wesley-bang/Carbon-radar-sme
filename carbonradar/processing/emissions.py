@@ -22,6 +22,7 @@ TRACE_COLUMNS = [
     "scope",
     "source_dataset",
     "source_row_number",
+    "source_document",
 ]
 
 
@@ -60,6 +61,7 @@ def calculate_scope2(utility_bills: pd.DataFrame, emission_factors: pd.DataFrame
                     scope="Scope 2",
                     source_dataset="utility_bills",
                     source_row_number=int(row.get("source_row_number", 0)),
+                    source_document="" if pd.isna(row.get("source_document", "")) else str(row.get("source_document", "")),
                 )
             )
         )
@@ -93,6 +95,7 @@ def calculate_scope1(fuel_logs: pd.DataFrame, emission_factors: pd.DataFrame, ye
                     scope="Scope 1",
                     source_dataset="fuel_logs",
                     source_row_number=int(row.get("source_row_number", 0)),
+                    source_document="" if pd.isna(row.get("source_document", "")) else str(row.get("source_document", "")),
                 )
             )
         )
@@ -139,4 +142,3 @@ def annual_total_tco2e(annual: pd.DataFrame, org_id: str, year: int) -> float:
     if rows.empty:
         return 0.0
     return round(float(rows["emissions_tco2e"].sum()), 6)
-
