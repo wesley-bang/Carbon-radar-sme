@@ -64,9 +64,9 @@ Columns: `org_id`, `site_id`, `period_month`, `activity_type`, `amount`, `unit`,
 
 ## Fee Scenario Output
 
-Columns: `org_id`, `year`, `annual_emissions_tco2e`, `remaining_to_threshold_tco2e`, `excess_over_threshold_tco2e`, `is_subject_to_fee`, `direct_fee_exposure_level`, `scenario_fee_standard_ntd`, `scenario_fee_preferential_a_ntd`, `scenario_fee_preferential_b_ntd`, `disclaimer`.
+Columns: `org_id`, `year`, `annual_emissions_tco2e`, `remaining_to_threshold_tco2e`, `excess_over_threshold_tco2e`, `is_subject_to_fee`, `k_value_tco2e`, `adjustment_factor`, `chargeable_emissions_tco2e`, `direct_fee_exposure_level`, `scenario_fee_standard_ntd`, `scenario_fee_preferential_a_ntd`, `scenario_fee_preferential_b_ntd`, `disclaimer`.
 
-Scenario fees are zero when `is_subject_to_fee` is false. When true, fees are calculated against full annual emissions in this demo scenario model.
+Scenario fees are zero when `is_subject_to_fee` is false. When true, fees are calculated from simplified chargeable emissions after the demo K value and adjustment factor.
 
 ## Readiness Output
 

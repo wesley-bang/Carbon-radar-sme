@@ -43,7 +43,15 @@ remaining_to_threshold_tco2e = max(25000 - annual emissions, 0)
 excess_over_threshold_tco2e = max(annual emissions - 25000, 0)
 ```
 
-If `is_subject_to_fee` is true, demo scenario fees are calculated as full annual emissions multiplied by the scenario rate. If false, scenario fees are zero.
+The v0.2.1 scenario estimates chargeable emissions with a simplified K-value model:
+
+```text
+k_value_tco2e = 25000
+adjustment_factor = 1.0
+chargeable_emissions_tco2e = max(annual emissions - k_value_tco2e, 0) x adjustment_factor
+```
+
+If `is_subject_to_fee` is false, chargeable emissions and scenario fees are zero. Scenario fees are calculated from simplified chargeable emissions after the K-value step.
 
 Exposure levels:
 
@@ -77,7 +85,7 @@ In v0.1.1, readiness scoring can use validated activity data when provided:
 
 Governance and supplier response readiness remain questionnaire-driven. If activity data is not provided, the scorer uses the original supplier disclosure proxy fields.
 
-## Demand Evidence Scoring
+## Demand Evidence Public-Data Support Scoring
 
 v0.2 adds a public-data demand evidence pipeline for the final project requirement "Evidence of Demand and Willingness to Pay." It uses curated CSV seed datasets instead of user interviews, scraping, or live APIs.
 
@@ -91,4 +99,4 @@ The demand score totals 100 points:
 - competitor benchmark: 15
 - hiring or procurement signal: 20
 
-Scores use confidence-weighted evidence counts. Willingness-to-pay rows are internal hypotheses and must not be described as verified buyer behavior.
+Scores use confidence-weighted evidence counts. The interpretation labels are public-data support labels, not verified demand labels. Willingness-to-pay rows are internal pricing hypotheses and must not be described as verified buyer behavior.

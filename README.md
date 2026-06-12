@@ -107,7 +107,9 @@ Outputs:
 - `data/outputs/demand_signal_scores.csv`
 - `data/outputs/demand_evidence_summary.md`
 
-Each evidence row includes source name, source URL, access date, notes, and confidence level. Rows marked `needs_verification` are treated as weak signals. Willingness-to-pay rows are internal hypotheses and are not presented as verified market facts.
+Each evidence row includes source name, source URL, access date, notes, and confidence level. Rows marked `needs_verification` are treated as weak signals. Willingness-to-pay rows are pricing hypotheses and are not presented as verified market facts.
+
+The demand score measures public-data support for the demand hypothesis. It does not verify customer demand or willingness to pay. Interviews or pilots are recommended future validation steps.
 
 Carbon-fee scenarios use:
 
@@ -122,7 +124,13 @@ The v0.1.1 demo scenario tracks:
 - `remaining_to_threshold_tco2e`: `max(25,000 - annual emissions, 0)`
 - `excess_over_threshold_tco2e`: `max(annual emissions - 25,000, 0)`
 
-If an organization is subject to the fee, scenario fees are calculated against full annual emissions. Otherwise scenario fees are zero. This is a conservative demo model, not a legal interpretation of the official fee base.
+The v0.2.1 demo estimates chargeable emissions with a simplified K-value model:
+
+- `k_value_tco2e`: default `25,000 tCO2e`
+- `adjustment_factor`: default `1.0`
+- `chargeable_emissions_tco2e`: `max(annual emissions - k value, 0) x adjustment factor` when subject to fee, otherwise `0`
+
+Scenario fees are calculated from chargeable emissions after the simplified K-value step. This is a simplified planning model, not a legal interpretation of the official fee base.
 
 ## Validation Bad-Data Demo
 

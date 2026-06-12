@@ -34,9 +34,9 @@ def test_demand_score_returns_0_to_100():
 
     assert 0 <= score.total_demand_score <= 100
     assert score.interpretation in {
-        "Strong evidence",
-        "Moderate evidence",
-        "Weak / needs more validation",
+        "Strong public-data support",
+        "Moderate public-data support",
+        "Weak public-data support / needs more validation",
     }
     assert "regulatory_pressure_score" in score.sub_scores
 
@@ -54,7 +54,7 @@ def test_weak_demand_score_interpretation_for_empty_evidence():
     score = score_market_signals(evidence)
 
     assert score.total_demand_score == 0
-    assert score.interpretation == "Weak / needs more validation"
+    assert score.interpretation == "Weak public-data support / needs more validation"
 
 
 def test_demand_report_file_generation(tmp_path):
@@ -69,5 +69,6 @@ def test_demand_report_file_generation(tmp_path):
 
     content = report_path.read_text(encoding="utf-8")
     assert "Demand signal score" in content
+    assert "public-data support" in content
     assert "not verified market facts" in content
     assert "Rows marked `needs_verification` are treated as weak signals" in content

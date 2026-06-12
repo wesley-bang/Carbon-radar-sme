@@ -25,6 +25,9 @@ def test_report_file_generation(tmp_path):
     assert "Remaining to threshold" in content
     assert "Excess over threshold" in content
     assert "Subject to direct fee" in content
+    assert "K value" in content
+    assert "Adjustment factor" in content
+    assert "Chargeable emissions" in content
     assert "Supplier disclosure readiness score" in content
     assert "Recommended actions" in content
     assert "Legal disclaimer" in content

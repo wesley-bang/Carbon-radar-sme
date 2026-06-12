@@ -83,10 +83,10 @@ def _score_from_count(weighted_count: float, max_points: float, target_count: fl
 
 def _interpretation(total_score: float) -> str:
     if total_score >= 80:
-        return "Strong evidence"
+        return "Strong public-data support"
     if total_score >= 60:
-        return "Moderate evidence"
-    return "Weak / needs more validation"
+        return "Moderate public-data support"
+    return "Weak public-data support / needs more validation"
 
 
 def _evidence_label(dataset: str, row: pd.Series) -> str:
@@ -150,4 +150,3 @@ def score_market_signals(evidence: dict[str, pd.DataFrame]) -> DemandScoreResult
 
 def demand_score_frame(result: DemandScoreResult) -> pd.DataFrame:
     return pd.DataFrame([result.to_flat_dict()])
-

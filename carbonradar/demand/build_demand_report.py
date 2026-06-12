@@ -118,6 +118,8 @@ These rows are internal pricing hypotheses for the final project, not verified m
 - Competitor benchmark: {score.sub_scores["competitor_benchmark_score"]:.1f} / 15
 - Hiring or procurement signal: {score.sub_scores["hiring_or_procurement_signal_score"]:.1f} / 20
 
+This score measures public-data support for the demand hypothesis. It is not verified customer demand or confirmed willingness to pay.
+
 Top supporting evidence:
 
 {chr(10).join(f"- {item}" for item in score.top_supporting_evidence)}
@@ -137,4 +139,3 @@ Top supporting evidence:
 
     report_path.write_text(content, encoding="utf-8")
     return report_path, score_path
-

@@ -163,12 +163,15 @@ Total annual Scope 1 + Scope 2 emissions: **{annual_total:.3f} tCO2e**.
 - Remaining to threshold: {fee.remaining_to_threshold_tco2e:.3f} tCO2e
 - Excess over threshold: {fee.excess_over_threshold_tco2e:.3f} tCO2e
 - Subject to direct fee: {"yes" if fee.is_subject_to_fee else "no"}
+- K value: {fee.k_value_tco2e:.3f} tCO2e
+- Adjustment factor: {fee.adjustment_factor:.3f}
+- Chargeable emissions: {fee.chargeable_emissions_tco2e:.3f} tCO2e
 - Direct fee exposure level: {fee.direct_fee_exposure_level}
 - Standard scenario: {_money(fee.scenario_fee_standard_ntd)}
 - Preferential A scenario: {_money(fee.scenario_fee_preferential_a_ntd)}
 - Preferential B scenario: {_money(fee.scenario_fee_preferential_b_ntd)}
 
-Fee scenarios use full annual emissions only when the organization is subject to the fee in this demo model; otherwise scenario fees are zero.
+Fee scenarios use simplified chargeable emissions after the demo K value and adjustment factor. If the organization is not subject to the fee in this demo model, scenario fees are zero.
 
 ## Supplier disclosure readiness score
 

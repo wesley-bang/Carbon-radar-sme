@@ -43,6 +43,9 @@ class FeeScenarioResult(BaseModel):
     remaining_to_threshold_tco2e: float
     excess_over_threshold_tco2e: float
     is_subject_to_fee: bool
+    k_value_tco2e: float
+    adjustment_factor: float
+    chargeable_emissions_tco2e: float
     direct_fee_exposure_level: str
     scenario_fee_standard_ntd: float
     scenario_fee_preferential_a_ntd: float
