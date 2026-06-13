@@ -1,4 +1,4 @@
-"""Typed records used across the v0.1 pipeline."""
+"""Typed records used across the CarbonRadar SME pipeline."""
 
 from __future__ import annotations
 

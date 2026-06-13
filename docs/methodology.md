@@ -14,7 +14,7 @@ Scope 2 emissions are calculated as:
 electricity kWh x electricity kgCO2e per kWh / 1000
 ```
 
-The v0.1 demo electricity factor is `0.467 kgCO2e/kWh` for 2025.
+The demo electricity factor is `0.467 kgCO2e/kWh` for 2025.
 
 ## Scope 1
 
@@ -28,14 +28,14 @@ Diesel and natural gas factors are demo placeholders. They must be replaced with
 
 ## Taiwan Carbon-Fee Scenarios
 
-The v0.1 scenario parameters are:
+The demo carbon-fee scenario parameters are:
 
 - threshold: `25,000 tCO2e`
 - standard rate: `NT$300/tCO2e`
 - preferential A rate: `NT$50/tCO2e`
 - preferential B rate: `NT$100/tCO2e`
 
-The v0.1.1 scenario tracks applicability separately from threshold distance:
+The demo scenario tracks applicability separately from threshold distance:
 
 ```text
 is_subject_to_fee = annual emissions >= 25000
@@ -43,7 +43,7 @@ remaining_to_threshold_tco2e = max(25000 - annual emissions, 0)
 excess_over_threshold_tco2e = max(annual emissions - 25000, 0)
 ```
 
-The v0.2.1 scenario estimates chargeable emissions with a simplified K-value model:
+The demo scenario estimates chargeable emissions with a simplified K-value model:
 
 ```text
 k_value_tco2e = 25000
@@ -77,7 +77,7 @@ Risk levels:
 
 The top three recommended actions are the largest gaps from the weighted sub-scores.
 
-In v0.1.1, readiness scoring can use validated activity data when provided:
+Readiness scoring can use validated activity data when provided:
 
 - data completeness: 12 months of electricity data per site plus fuel record month coverage
 - traceability: percentage of utility and fuel rows with `source_document`

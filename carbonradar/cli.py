@@ -11,6 +11,7 @@ from carbonradar.demand.build_demand_report import build_demand_report
 from carbonradar.demand.load_evidence import load_demand_evidence, validate_evidence_sources
 from carbonradar.demand.score_market_signals import demand_score_frame, score_market_signals
 from carbonradar.delivery.demo_bundle import run_all_demo_outputs
+from carbonradar.delivery.final_materials import build_final_materials
 from carbonradar.ingestion.load_sample import (
     OUTPUT_DIR,
     build_sample_manifest,
@@ -241,6 +242,14 @@ def cmd_run_all_demo(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_build_final_materials(args: argparse.Namespace) -> int:
+    paths = build_final_materials(args.org, args.year)
+    print(f"Final report materials complete for {args.org} {args.year}")
+    for name, path in paths.items():
+        print(f"{name}: {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="carbonradar", description="CarbonRadar SME local pipeline")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -257,6 +266,7 @@ def build_parser() -> argparse.ArgumentParser:
         "build-html-report": (cmd_build_html_report, True),
         "run-demo": (cmd_run_demo, True),
         "run-all-demo": (cmd_run_all_demo, True),
+        "build-final-materials": (cmd_build_final_materials, True),
     }
 
     for name, (handler, needs_org_year) in commands.items():

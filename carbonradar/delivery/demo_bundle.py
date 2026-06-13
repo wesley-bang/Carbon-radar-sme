@@ -22,7 +22,12 @@ def _write_csv(df, path: Path) -> Path:
     return path
 
 
-def run_all_demo_outputs(org_id: str, year: int, output_dir: Path = OUTPUT_DIR) -> dict[str, Path]:
+def run_all_demo_outputs(
+    org_id: str,
+    year: int,
+    output_dir: Path = OUTPUT_DIR,
+    include_final_materials: bool = True,
+) -> dict[str, Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     paths: dict[str, Path] = {}
 
@@ -66,5 +71,10 @@ def run_all_demo_outputs(org_id: str, year: int, output_dir: Path = OUTPUT_DIR) 
     demand_report_path, _ = build_demand_report(evidence=evidence, output_dir=output_dir)
     paths["demand_evidence_summary"] = demand_report_path
 
-    return paths
+    if include_final_materials:
+        from carbonradar.delivery.final_materials import build_final_materials
 
+        material_paths = build_final_materials(org_id, year, output_dir=output_dir)
+        paths.update({f"final_material_{name}": path for name, path in material_paths.items()})
+
+    return paths

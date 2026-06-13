@@ -1,6 +1,6 @@
 [project]
 name = "carbonradar-sme"
-version = "0.3.0"
+version = "0.3.1"
 description = "Local Scope 1 and Scope 2 carbon pipeline for Taiwanese SME manufacturers."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -1,4 +1,4 @@
-"""Load deterministic sample CSV data for v0.1."""
+"""Load deterministic sample CSV data."""
 
 from __future__ import annotations
 
@@ -57,4 +57,3 @@ def build_sample_manifest() -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
-

@@ -18,7 +18,7 @@ def test_dashboard_data_for_org001():
 def test_run_all_demo_outputs_generates_expected_files(tmp_path):
     paths = run_all_demo_outputs("ORG001", 2025, output_dir=tmp_path)
 
-    expected_keys = {
+    core_expected_keys = {
         "validation_report",
         "emissions_trace",
         "monthly_emissions",
@@ -31,7 +31,18 @@ def test_run_all_demo_outputs_generates_expected_files(tmp_path):
         "demand_signal_scores",
         "demand_evidence_summary",
     }
+    final_material_keys = {
+        "final_material_executive_summary",
+        "final_material_technical_system_summary",
+        "final_material_demand_evidence_digest",
+        "final_material_business_model_summary",
+        "final_material_go_to_market_risks",
+        "final_material_limitations_and_future_work",
+        "final_material_artifact_inventory",
+        "final_material_final_report_outline",
+    }
 
-    assert set(paths) == expected_keys
+    assert core_expected_keys.issubset(paths)
+    assert final_material_keys.issubset(paths)
     for path in paths.values():
         assert path.exists()

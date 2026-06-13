@@ -1,3 +1,3 @@
-"""CarbonRadar SME v0.1 local data pipeline."""
+"""CarbonRadar SME local data pipeline."""
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

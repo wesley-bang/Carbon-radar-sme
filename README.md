@@ -1,6 +1,6 @@
 # CarbonRadar SME
 
-CarbonRadar SME is a local Python data pipeline for Taiwanese SME manufacturers. It turns sample electricity bills, fuel logs, and supplier disclosure questionnaire data into Scope 1 and Scope 2 emissions estimates, Taiwan carbon-fee scenarios, readiness scores, and Markdown reports.
+CarbonRadar SME is a local Python product demo for Taiwanese SME manufacturers. It turns sample electricity bills, fuel logs, supplier disclosure questionnaires, and curated public demand evidence into Scope 1 and Scope 2 emissions estimates, Taiwan carbon-fee scenarios, readiness scores, Markdown reports, and standalone HTML reports.
 
 This repository is a university Big Data Systems final project foundation. It is intentionally simple, reproducible, and explainable.
 
@@ -10,7 +10,7 @@ The target users are Taiwanese SME manufacturers with roughly 20-200 employees, 
 
 ## MVP Scope
 
-v0.3 includes:
+v0.3.1 includes:
 
 - deterministic sample organization, electricity, fuel, supplier disclosure, and emission factor CSVs
 - curated public demand evidence CSVs
@@ -22,11 +22,12 @@ v0.3 includes:
 - Markdown report generation
 - PDF-ready standalone HTML report generation
 - local Streamlit dashboard
+- final report source material generation
 - demand evidence validation and scoring
 - CLI commands
 - pytest coverage
 
-v0.3 does not include authentication, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, database storage, ISO certification workflow, or legal interpretation.
+v0.3.1 does not include authentication, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, database storage, ISO certification workflow, or legal interpretation.
 
 ## Data Pipeline Overview
 
@@ -62,6 +63,7 @@ The full demo command writes outputs to `data/outputs/`, including:
 - `demand_evidence_validation_report.csv`
 - `demand_signal_scores.csv`
 - `demand_evidence_summary.md`
+- `report_materials/*.md`
 
 ## Sample Commands
 
@@ -77,6 +79,15 @@ python -m carbonradar.cli build-report --org ORG001 --year 2025
 python -m carbonradar.cli build-html-report --org ORG001 --year 2025
 python -m carbonradar.cli run-demo --org ORG001 --year 2025
 python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
+python -m carbonradar.cli build-final-materials --org ORG001 --year 2025
+```
+
+## How To Grade / Review This Project
+
+```bash
+python -m pytest -q
+python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
+streamlit run app/streamlit_app.py
 ```
 
 ## Data Sources And Assumptions
@@ -168,6 +179,17 @@ python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
 ```
 
 The HTML report is standalone and includes basic CSS for printing. It is not a PDF renderer; use browser print-to-PDF when a PDF artifact is needed.
+
+## Final Report Materials
+
+Generate the full output bundle and final report source notes:
+
+```bash
+python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
+python -m carbonradar.cli build-final-materials --org ORG001 --year 2025
+```
+
+Final report materials are written under `data/outputs/report_materials/`. They are structured source notes for writing the final English PDF report, including executive, technical, demand evidence, business model, risk, limitation, artifact inventory, and outline notes. They are not a substitute for the final report.
 
 ## Validation Bad-Data Demo
 
