@@ -10,7 +10,7 @@ The target users are Taiwanese SME manufacturers with roughly 20-200 employees, 
 
 ## MVP Scope
 
-v0.3.1 includes:
+v0.3.2 includes:
 
 - deterministic sample organization, electricity, fuel, supplier disclosure, and emission factor CSVs
 - curated public demand evidence CSVs
@@ -22,12 +22,13 @@ v0.3.1 includes:
 - Markdown report generation
 - PDF-ready standalone HTML report generation
 - local Streamlit dashboard
+- Streamlit Community Cloud deployment files
 - final report source material generation
 - demand evidence validation and scoring
 - CLI commands
 - pytest coverage
 
-v0.3.1 does not include authentication, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, deployment infrastructure, database storage, ISO certification workflow, or legal interpretation.
+v0.3.2 does not include authentication, OCR, live APIs, scraping, full Scope 3, product carbon footprinting, custom deployment infrastructure, database storage, ISO certification workflow, or legal interpretation.
 
 ## Data Pipeline Overview
 
@@ -179,6 +180,12 @@ python -m carbonradar.cli run-all-demo --org ORG001 --year 2025
 ```
 
 The HTML report is standalone and includes basic CSS for printing. It is not a PDF renderer; use browser print-to-PDF when a PDF artifact is needed.
+
+## Deployment
+
+The Streamlit dashboard can be deployed to Streamlit Community Cloud as a read-only demo using `app/streamlit_app.py` as the entry point. No secrets are required because the app uses committed demo CSV files only.
+
+If deployed, add the live Streamlit URL to the first page of the final PDF report. See [docs/deployment.md](docs/deployment.md) for the deployment checklist.
 
 ## Final Report Materials
 

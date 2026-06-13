@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from carbonradar.delivery.dashboard_data import prepare_dashboard_data
 from carbonradar.delivery.demo_bundle import run_all_demo_outputs
 
@@ -46,3 +48,25 @@ def test_run_all_demo_outputs_generates_expected_files(tmp_path):
     assert final_material_keys.issubset(paths)
     for path in paths.values():
         assert path.exists()
+
+
+def test_streamlit_deployment_runtime_files_and_dashboard_data():
+    app_path = Path("app/streamlit_app.py")
+    requirements_path = Path("requirements.txt")
+
+    assert app_path.exists()
+    assert requirements_path.exists()
+    assert Path("data/sample").is_dir()
+    assert Path("data/demand_evidence").is_dir()
+
+    requirements = requirements_path.read_text(encoding="utf-8").lower()
+    assert "streamlit" in requirements
+    assert "pandas" in requirements
+    assert "pydantic" in requirements
+    assert "pytest" not in requirements
+
+    data = prepare_dashboard_data("ORG001", 2025)
+    assert data.annual_total_tco2e > 0
+    assert data.fee_scenario.chargeable_emissions_tco2e >= 0
+    assert 0 <= data.readiness.total_score <= 100
+    assert 0 <= data.demand_score.total_demand_score <= 100

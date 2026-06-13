@@ -1,6 +1,6 @@
 # Architecture
 
-CarbonRadar SME v0.3.1 is a local batch pipeline with a small local delivery layer. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, Markdown/HTML files for reports, Streamlit for a demo dashboard, and generated source materials for the final report.
+CarbonRadar SME v0.3.2 is a local batch pipeline with a small local delivery layer. It uses committed CSV files as the data source, pandas dataframes for processing, pydantic models for typed output records, Markdown/HTML files for reports, Streamlit for a demo dashboard, generated source materials for the final report, and minimal Streamlit Community Cloud deployment files.
 
 ## Components
 
@@ -73,7 +73,7 @@ flowchart LR
     AA --> AB["data/outputs/report_materials/*.md"]
 ```
 
-No authentication, OCR, live scraping, live API connection, database, message queue, workflow scheduler, or deployment platform is part of v0.3.1.
+No authentication, OCR, live scraping, live API connection, database, message queue, workflow scheduler, or custom deployment platform is part of v0.3.2.
 
 ## Mapping To Final Project Requirements
 

@@ -201,7 +201,7 @@ This is an educational/demo project. It is not legal, tax, certification, or reg
 
     technical_system_summary = f"""# Technical System Summary
 
-## Data Sources Used In v0.3.1
+## Data Sources Used In v0.3.2
 
 - Sample factory master.
 - Utility bills.
